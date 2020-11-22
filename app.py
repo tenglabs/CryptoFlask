@@ -108,7 +108,7 @@ def dashboard():
 
 @app.route("/")
 def index():
-
+    send_money('uname', 'dotname', 13)
     return render_template('index.html')
 
 

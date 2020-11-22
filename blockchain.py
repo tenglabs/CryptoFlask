@@ -41,8 +41,10 @@ class Block():
         )
 
 
-class BlockChain():
+class Blockchain():
+
     difficulty = 4
+
 
     def __init__(self):
         self.chain = []
@@ -54,14 +56,11 @@ class BlockChain():
         self.chain.remove(block)
 
     def mine(self, block):
-        try:
-
-            block.previous_hash = self.chain[-1].hash()
-        except IndexError:
-            pass
+        try: block.previous_hash = self.chain[-1].hash()
+        except IndexError: pass
 
         while True:
-            if block.hash()[:self.difficulty] == '0' * self.difficulty:
+            if block.hash()[:self.difficulty] == "0" * self.difficulty:
                 self.add(block); break
             else:
                 block.nonce += 1
@@ -76,7 +75,7 @@ class BlockChain():
 
 
 def main():
-    blockchain = BlockChain()
+    blockchain = Blockchain()
     database = ['hello world', '123', 'hello', 'bye']
 
     num = 0
