@@ -7,8 +7,8 @@
         <div class="card-header">Register an Account</div>
         <div class="card-body">
 
-
-
+          {% include 'includes/_messages.html' %}
+          {% from "includes/_formhelpers.html" import render_field %}
           <form method="POST" action="">
             <div class="form-group">
               <div class="form-row">

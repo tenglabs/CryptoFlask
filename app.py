@@ -17,6 +17,16 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
 
+def log_in_user(username):
+    users = Table("users", "name", "email", "username", "password")
+    user = users.getone("username", username)
+
+    session['logged_in'] = True
+    session['username'] = username
+    session['name'] = user.get('name')
+    session['email'] = user.get('email')
+
+
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
@@ -40,6 +50,12 @@ def register():
             return redirect(url_for('register'))
 
     return render_template('register.html', form=form)
+
+
+@app.route("/dashboard")
+def dashboard():
+
+    return render_template('dashboard.html', session=session)
 
 
 @app.route("/")
