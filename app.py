@@ -3,7 +3,7 @@ from passlib.hash import sha256_crypt
 from flask_mysqldb import MySQL
 from sqlhelpers import *
 from forms import *
-
+from functools import wraps
 
 app =  Flask(__name__)
 
@@ -15,6 +15,17 @@ app.config['MYSQL_DB'] = 'crypto'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
+
+
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("Unauthorized, please login.", "danger")
+            return redirect(url_for('login'))
+    return wrap
 
 
 def log_in_user(username):
@@ -52,7 +63,7 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route("/login", methods = ['GET', 'POST'])
+@app.route("/login", methods=['GET', 'POST'])
 def login():
 
     if request.method == 'POST':
@@ -82,7 +93,14 @@ def login():
     return render_template('login.html')
 
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('logout success', 'success')
+    return redirect(url_for('login'))
+
 @app.route("/dashboard")
+@is_logged_in
 def dashboard():
 
     return render_template('dashboard.html', session=session)
