@@ -52,6 +52,36 @@ def register():
     return render_template('register.html', form=form)
 
 
+@app.route("/login", methods = ['GET', 'POST'])
+def login():
+
+    if request.method == 'POST':
+
+        username = request.form['username']
+        candidate = request.form['password']
+
+        users = Table("users", "name", "email", "username", "password")
+        user = users.getone("username", username)
+        accPass = user.get('password')
+
+        if accPass is None:
+            flash("Username is not found", 'danger')
+            return redirect(url_for('login'))
+        else:
+
+            if sha256_crypt.verify(candidate, accPass):
+
+                log_in_user(username)
+                flash('You are now logged in.', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+
+                flash("Invalid password", 'danger')
+                return redirect(url_for('login'))
+
+    return render_template('login.html')
+
+
 @app.route("/dashboard")
 def dashboard():
 
